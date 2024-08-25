@@ -1,3 +1,5 @@
+import Navbar from "./components/NavBar";
+
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
   <html lang="en">
     <head>{/* Add global metadata, links, or other head elements here */}</head>

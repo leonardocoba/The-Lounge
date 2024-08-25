@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import logo from "../assets/logos/LoungeLogo.png";
+import "../globals.css";
 
 const Navbar = () => (
-  <nav className="flex items-center justify-between p-4 bg-[#2C3E50] rounded-full shadow-lg">
+  <div className="flex items-center justify-between p-4 bg-[#2C3E50] rounded-full shadow-lg">
     {/* Logo on the far left */}
     <div className="flex items-center flex-shrink-0">
       <Link href="/">
@@ -37,7 +38,7 @@ const Navbar = () => (
         </button>
       </Link>
     </div>
-  </nav>
+  </div>
 );
 
 export default Navbar;

@@ -9,9 +9,8 @@ export default function Home() {
   return (
     <Layout>
       <div className="min-h-screen bg-[#F5F5DC] text-white p-5">
+        <Navbar />
         <div className="h-[200vh]">
-          <Navbar />
-
           {/* Preview Section */}
           <div className="flex items-center justify-between bg-[#1B1F3B] text-white rounded-3xl p-8 mt-10 shadow-lg h-[75vh]">
             {/* Text on the left side */}
