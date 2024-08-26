@@ -1,16 +1,18 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../lib/firebase"; // Adjust the import path as needed
-import RoomLayout from "../components/RoomLayout";
+import { db } from "../../lib/firebase";
+import RoomLayout from "../../components/RoomLayout";
 
 const RoomPage = () => {
-  const router = useRouter();
-  const { roomId } = router.query; // Extract roomId from the URL
+  const pathname = usePathname(); // Get the current path
   const [roomData, setRoomData] = useState<any>(null);
 
   useEffect(() => {
+    const roomId = pathname.split("/").pop(); // Extract roomId from the URL path
+
     const fetchRoomData = async () => {
       if (!roomId) return;
 
@@ -29,7 +31,7 @@ const RoomPage = () => {
     };
 
     fetchRoomData();
-  }, [roomId]);
+  }, [pathname]);
 
   if (!roomData) {
     return <div>Loading...</div>;
@@ -39,9 +41,8 @@ const RoomPage = () => {
     <RoomLayout>
       <div>
         <h1>{roomData.roomName}</h1>
-        {/* Display other room-specific details and interactive features here */}
         <p>Owner: {roomData.owner}</p>
-        {/* You can add draggable elements, chat, etc. */}
+        {/* Add draggable elements, chat, etc. */}
       </div>
     </RoomLayout>
   );
