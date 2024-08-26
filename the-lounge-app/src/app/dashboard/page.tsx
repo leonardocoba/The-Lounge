@@ -133,25 +133,23 @@ export default function Dashboard() {
         {/* Right Square with more rounded corners and draggable circles */}
         <div className="bg-[#a080ff] h-4/5 w-[85%] rounded-3xl flex-shrink-0 relative overflow-hidden">
           {rooms.map((room, index) => (
-            <Draggable
-              key={room.id}
-              bounds="parent" // Restrict dragging to the parent div (right square)
-            >
-              <Link href={`/room/${room.id}`}>
-                <div
-                  className="bg-white text-center text-black flex items-center justify-center rounded-full"
-                  style={{
-                    width: "150px",
-                    height: "150px",
-                    position: "absolute",
-                    top: `${index * 20 + 10}%`, // Distribute circles vertically
-                    left: `${index * 20 + 10}%`, // Distribute circles horizontally
-                    cursor: "pointer",
-                  }}
-                >
+            <Draggable key={room.id} bounds="parent">
+              <div
+                className="bg-white text-center text-black flex items-center justify-center rounded-full"
+                style={{
+                  width: "150px",
+                  height: "150px",
+                  position: "absolute",
+                  top: `${index * 20 + 10}%`,
+                  left: `${index * 20 + 10}%`,
+                  cursor: "pointer",
+                }}
+                onClick={(e) => e.stopPropagation()} // Prevent click propagation
+              >
+                <Link href={`/room/${room.id}`} passHref>
                   {room.roomName}
-                </div>
-              </Link>
+                </Link>
+              </div>
             </Draggable>
           ))}
         </div>
