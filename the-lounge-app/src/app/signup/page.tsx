@@ -3,8 +3,10 @@
 import { useState } from "react";
 import Navbar from "../components/NavBar";
 import Link from "next/link";
-import { auth } from "../lib/firebase";
+import { auth } from "../lib/firebase"; // Firebase Auth import
+import { db } from "../lib/firebase"; // Firestore import
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore"; // Firestore imports
 import BasicErrorMessage, {
   showBasicErrorMessage,
 } from "../components/BasicErrorMessage";
@@ -33,7 +35,17 @@ export default function Signup() {
       );
       const user = userCredential.user;
 
-      console.log("User signed up:", user);
+      // Add the new user data to Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        username: username,
+        email: email,
+        friends: [], // Empty array or null for friends
+        ownedRooms: [], // Empty array or null for ownedRooms
+        joinedRooms: [], // Empty array or null for joinedRooms
+        createdAt: serverTimestamp(), // Timestamp for creation
+      });
+
+      console.log("User signed up and added to Firestore:", user);
 
       // Set success to true to show the success message and link
       setSuccess(true);
