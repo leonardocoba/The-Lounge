@@ -1,11 +1,16 @@
+"use client";
+
 import Layout from "./layout";
 import "./globals.css";
 import Navbar from "./components/NavBar";
 import Image from "next/image";
 import PreviewImage from "./assets/images/AppPreview.png";
 import Link from "next/link";
+import { useAuth } from "./context/AuthContext";
 
 export default function Home() {
+  const { user } = useAuth(); // Get the current user from the Auth context
+
   return (
     <Layout>
       <div className="min-h-screen bg-[#F5F5DC] text-white p-5">
@@ -19,9 +24,9 @@ export default function Home() {
               <p className="mt-4 text-3xl pb-10">
                 Share. Create. Stream. Be Together.
               </p>
-              <Link href="/login">
+              <Link href={user ? "/dashboard" : "/login"}>
                 <button className="bg-[#AEE1D4] text-[#1B1F3B] py-3 px-6 rounded-full font-semibold text-2xl">
-                  Get Started
+                  {user ? "Enter the Lounge" : "Get Started"}
                 </button>
               </Link>
             </div>
