@@ -1,24 +1,12 @@
 "use client"; // Ensure this is a client-side component if necessary
 
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Import the ArrowBackIcon
 import logo from "../../assets/logos/LoungeLogo.png"; // Adjust the path to go two directories back
 
 const ProfileSettings = () => {
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-purple-700 flex-col">
-      {/* Back Button in the top left corner */}
-      <div className="absolute top-4 left-4 z-50">
-        <Link href="/">
-          <button className="flex items-center text-white text-lg bg-black p-2 rounded-md">
-            <ArrowBackIcon className="mr-2" />
-            Back to Home
-          </button>
-        </Link>
-      </div>
-
+    <div className="flex items-center justify-center min-h-screen bg-purple-700 flex-col">
       {/* Lounge Logo on top */}
       <div className="mb-4">
         <Image src={logo} alt="Lounge Logo" className="w-auto h-20" />
