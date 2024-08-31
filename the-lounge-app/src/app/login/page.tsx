@@ -3,12 +3,11 @@
 import { useState } from "react";
 import Navbar from "../components/NavBar";
 import Link from "next/link";
-import { auth } from "../lib/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/navigation";
 import BasicErrorMessage, {
   showBasicErrorMessage,
 } from "../components/BasicErrorMessage";
-import { useRouter } from "next/navigation";
+import { signIn, signInWithGoogle } from "../lib/firebase/auth"; // Import the utility functions
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -19,17 +18,23 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      // Sign in the user with Firebase Authentication
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
+      // Sign in the user with your custom signIn function
+      const user = await signIn(email, password);
 
       console.log("User logged in:", user);
 
-      // Redirect to the dashboard after successful login
+      router.push("/dashboard");
+    } catch (error: any) {
+      showBasicErrorMessage(error.message); // Use showBasicErrorMessage to display the error
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const user = await signInWithGoogle();
+
+      console.log("User logged in with Google:", user);
+
       router.push("/dashboard");
     } catch (error: any) {
       showBasicErrorMessage(error.message); // Use showBasicErrorMessage to display the error
@@ -92,6 +97,17 @@ export default function Login() {
               Submit
             </button>
           </form>
+
+          {/* Google Sign In */}
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={handleGoogleSignIn}
+              className="flex items-center justify-center bg-[#4285F4] w-full py-3 rounded text-white text-2xl font-normal"
+            >
+              Sign in with Google
+            </button>
+          </div>
+
           <div className="text-xl text-center mt-8">
             Don’t have an account yet?{" "}
             <Link className="text-xl text-[#7747ff]" href="/signup">
