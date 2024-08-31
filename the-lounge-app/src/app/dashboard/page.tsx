@@ -1,11 +1,12 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import ModeCommentIcon from "@mui/icons-material/ModeComment";
 import AddIcon from "@mui/icons-material/Add";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SearchIcon from "@mui/icons-material/Search";
 import Draggable from "react-draggable";
-import { db, auth } from "../lib/firebase"; // Firestore and Auth import
+import { db } from "../lib/firebase"; // Firestore import
 import Link from "next/link";
 import { useAuthState } from "react-firebase-hooks/auth"; // Auth state hook
 import {
@@ -18,14 +19,16 @@ import {
   serverTimestamp,
   arrayUnion,
 } from "firebase/firestore"; // Firestore imports
-
+import ProfileDropdown from "../components/ProfileDropdown"; // Import the ProfileDropdown component
+import { getCurrentUser } from "../lib/firebase/auth"; // Import utility function to get current user
+import Navbar from "../components/NavBar";
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [roomName, setRoomName] = useState("");
   const [roomId, setRoomId] = useState(""); // New state for inputting room ID
   const [rooms, setRooms] = useState<any[]>([]); // Stores room details
-  const [user] = useAuthState(auth); // Get the currently logged-in user
+  const user = getCurrentUser(); // Get the currently logged-in user using utility function
 
   // Function to fetch joined rooms
   const fetchJoinedRooms = async () => {
@@ -157,7 +160,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="h-screen w-screen bg-[#1e0e4b] flex items-center justify-center p-4 relative">
+    <div className="h-screen w-screen bg-[#1e0e4b] flex flex-col p-4 relative">
+      {/* Profile dropdown on the top right */}
+      <Navbar />
+
       {/* Container for the circular layout */}
       <div className="relative h-full w-full flex items-center justify-between">
         {/* Left Square with more rounded corners and icons */}
