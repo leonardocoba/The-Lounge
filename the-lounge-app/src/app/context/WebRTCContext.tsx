@@ -29,7 +29,6 @@ const servers = {
   iceCandidatePoolSize: 10,
 };
 
-// Create a provider component
 export const WebRTCProvider = ({ children }: { children: ReactNode }) => {
   const [pc, setPc] = useState<RTCPeerConnection | null>(null);
   const [localStream, setLocalStreamState] = useState<MediaStream | null>(null);
@@ -39,8 +38,38 @@ export const WebRTCProvider = ({ children }: { children: ReactNode }) => {
 
   // Initialize peer connection
   const setupPeerConnection = () => {
-    const peerConnection = new RTCPeerConnection(servers);
+    // Define ICE server configurations
+    const configuration = {
+      iceServers: [
+        {
+          urls: [
+            "stun:stun1.1.google.com:19302",
+            "stun:stun2.1.google.com:19302",
+          ],
+        },
+      ],
+    };
+
+    // Create a new RTCPeerConnection instance
+    const peerConnection = new RTCPeerConnection(configuration);
+
+    // Add event listeners for ICE candidate and track events
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate) {
+        console.log("New ICE candidate:", event.candidate);
+        // Send the candidate to the remote peer via signaling
+      }
+    };
+
+    peerConnection.ontrack = (event) => {
+      console.log("Received remote track:", event.streams[0]);
+      // You can set this as the remote stream (use state or context)
+      setRemoteStream(event.streams[0]);
+    };
+
+    // Set the peer connection in the state
     setPc(peerConnection);
+    console.log("PeerConnection initialized:", peerConnection);
   };
 
   // Set local stream

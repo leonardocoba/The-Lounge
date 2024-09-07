@@ -78,60 +78,65 @@ const RoomPage = () => {
   useEffect(() => {
     const setupCall = async () => {
       const roomId = pathname.split("/").pop(); // Get room ID
-      if (!roomId || !pc) return;
+      console.log("Room ID:", roomId);
+      if (!roomId) {
+        console.error("Room ID not available");
+        return;
+      }
 
-      // Set up peer connection
-      setupPeerConnection();
-
+      if (!pc) {
+        setupPeerConnection();
+      }
+      if (!pc) {
+        console.error("PeerConnection is not initialized");
+        return;
+      }
       // Get local media stream
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-      setLocalStream(stream);
-      stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+        setLocalStream(stream);
+        stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+      } catch (error) {
+        console.error("Error accessing media devices:", error);
+        return;
+      }
 
-      // Listen for remote tracks
-      pc.addEventListener("track", (event) => {
-        const [remoteTrack] = event.streams;
-        setRemoteStream(remoteTrack);
-      });
-
-      // Check if there is an existing offer
+      // Check for existing offer
       const callRef = doc(db, "calls", roomId);
       const callSnapshot = await getDoc(callRef);
+      console.log("Call Snapshot:", callSnapshot.data());
 
       if (callSnapshot.exists()) {
-        // If there's an offer, create an answer
         const callData = callSnapshot.data();
         if (callData.offer) {
+          console.log("Offer exists, creating answer");
           await pc.setRemoteDescription(
             new RTCSessionDescription(callData.offer)
           );
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
-
-          // Send the answer to Firestore
           await setDoc(callRef, { answer }, { merge: true });
         }
       } else {
-        // No offer exists, create an offer
+        console.log("No offer exists, creating offer");
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
-
-        // Save offer to Firestore in `calls` collection
         await setDoc(callRef, { offer });
       }
 
-      // Listen for remote answer
+      // Firestore real-time listener for remote answer
       const unsubscribe = onSnapshot(callRef, (snapshot) => {
         const data = snapshot.data();
+        console.log("onSnapshot data:", data);
         if (data?.answer && !pc.currentRemoteDescription) {
           pc.setRemoteDescription(new RTCSessionDescription(data.answer));
         }
       });
 
-      // Listen for ICE candidates and exchange them
+      // Handle ICE candidate exchange
       pc.addEventListener("icecandidate", async (event) => {
         if (event.candidate) {
           const candidateRef = collection(db, "calls", roomId, "candidates");
@@ -139,7 +144,6 @@ const RoomPage = () => {
         }
       });
 
-      // Listen for incoming ICE candidates
       onSnapshot(collection(db, "calls", roomId, "candidates"), (snapshot) => {
         snapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
@@ -149,7 +153,6 @@ const RoomPage = () => {
         });
       });
 
-      // Cleanup
       return () => unsubscribe();
     };
 
