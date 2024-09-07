@@ -7,7 +7,7 @@ import Image from "next/image";
 import PreviewImage from "./assets/images/AppPreview.png";
 import Link from "next/link";
 import { useAuth } from "./context/AuthContext";
-
+import { WebRTCProvider } from "./context/WebRTCContext";
 export default function Home() {
   const { user } = useAuth(); // Get the current user from the Auth context
 
