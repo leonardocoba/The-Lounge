@@ -15,6 +15,7 @@
     "@mui/material": "^5.16.7",
     "dotenv": "^16.4.5",
     "firebase": "^10.13.0",
+    "mediasoup": "^3.14.14",
     "next": "14.2.6",
     "react": "^18",
     "react-dom": "^18",
